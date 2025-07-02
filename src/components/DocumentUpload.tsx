@@ -7,8 +7,17 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Upload, FileText, Download, Trash2, Eye } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
+interface Document {
+  id: number;
+  name: string;
+  type: string;
+  size: string;
+  uploadDate: string;
+  status: string;
+}
+
 const DocumentUpload = () => {
-  const [documents, setDocuments] = useState([
+  const [documents, setDocuments] = useState<Document[]>([
     {
       id: 1,
       name: 'Company Registration Certificate.pdf',
@@ -50,7 +59,9 @@ const DocumentUpload = () => {
     'Other Supporting Documents'
   ];
 
-  const handleFileUpload = async (event) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+    
     const files = Array.from(event.target.files);
     
     for (const file of files) {
@@ -74,7 +85,7 @@ const DocumentUpload = () => {
             setIsUploading(false);
             
             // Add to documents list
-            const newDoc = {
+            const newDoc: Document = {
               id: Date.now() + Math.random(),
               name: file.name,
               type: 'New Document',
@@ -98,14 +109,14 @@ const DocumentUpload = () => {
     }
   };
 
-  const handleDownload = (doc) => {
+  const handleDownload = (doc: Document) => {
     toast({
       title: "Download Started",
       description: `Downloading ${doc.name}`
     });
   };
 
-  const handleDelete = (docId) => {
+  const handleDelete = (docId: number) => {
     setDocuments(prev => prev.filter(doc => doc.id !== docId));
     toast({
       title: "Document Deleted",
@@ -113,13 +124,13 @@ const DocumentUpload = () => {
     });
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     const colors = {
       'Verified': 'bg-green-100 text-green-800',
       'Pending': 'bg-yellow-100 text-yellow-800',
       'Rejected': 'bg-red-100 text-red-800'
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
   return (

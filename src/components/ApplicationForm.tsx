@@ -25,18 +25,20 @@ const ApplicationForm = () => {
     certifications: ''
   });
   
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [agreementChecked, setAgreementChecked] = useState(false);
   const [isDraft, setIsDraft] = useState(false);
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+    
     const files = Array.from(event.target.files);
     const totalSize = files.reduce((sum, file) => sum + file.size, 0);
     
@@ -56,7 +58,7 @@ const ApplicationForm = () => {
     });
   };
 
-  const removeFile = (index) => {
+  const removeFile = (index: number) => {
     setUploadedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
@@ -68,7 +70,7 @@ const ApplicationForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!agreementChecked) {
@@ -298,7 +300,7 @@ const ApplicationForm = () => {
                 <Checkbox
                   id="agreement"
                   checked={agreementChecked}
-                  onCheckedChange={setAgreementChecked}
+                  onCheckedChange={(checked) => setAgreementChecked(checked === true)}
                 />
                 <div className="space-y-2">
                   <label htmlFor="agreement" className="text-sm font-medium cursor-pointer">
